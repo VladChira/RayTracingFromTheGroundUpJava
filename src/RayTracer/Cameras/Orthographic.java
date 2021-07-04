@@ -4,6 +4,9 @@ import RayTracer.Utilities.*;
 import RayTracer.World;
 import javafx.scene.image.PixelWriter;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
 @Deprecated
 public class Orthographic extends Camera {
 
@@ -12,7 +15,9 @@ public class Orthographic extends Camera {
     }
 
     @Override
-    public void render_scene(World world, PixelWriter pw) {
+    public BufferedImage render_scene(World world) {
+        BufferedImage render = new BufferedImage(world.hres, world.vres, BufferedImage.TYPE_INT_RGB);
+
         RGBColor pixelColor = new RGBColor();
         RGBColor accumulator;
         Ray ray = new Ray();
@@ -39,8 +44,12 @@ public class Orthographic extends Camera {
                 }
                 accumulator.divideBy(world.vp.num_samples);
                 pixelColor.setTo(accumulator);
-                world.display_pixel(r, c, pixelColor, pw);
+
+                Color color = new Color((int)pixelColor.r * 255, (int)pixelColor.g * 255, (int)pixelColor.b * 255, 255);
+                int colorRGB = color.getRGB();
+                render.setRGB(r,c,colorRGB);
             }
         }
+        return render;
     }
 }

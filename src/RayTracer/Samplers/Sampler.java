@@ -19,7 +19,7 @@ public class Sampler {
 
     public Sampler(int samples) {
         this.num_samples = samples;
-        this.num_sets = 83; //nr of sets
+        this.num_sets = 25; //nr of sets
         count = 0;
         jump = 0;
         this.samples = new ArrayList<>();

@@ -5,11 +5,13 @@ import RayTracer.Utilities.Vector3D;
 import RayTracer.World;
 import javafx.scene.image.PixelWriter;
 
+import java.awt.image.BufferedImage;
+
 /**
  * Base class for all virtual cameras.
  */
 
-class Camera {
+public class Camera {
 
     public Point3D eye;
     public Point3D lookat;
@@ -36,7 +38,8 @@ class Camera {
         w.setTo(c.w);
     }
 
-    public void render_scene(World world_ptr, PixelWriter pw) {
+    public BufferedImage render_scene(World world_ptr) {
+        return new BufferedImage(world_ptr.hres,world_ptr.vres, BufferedImage.TYPE_INT_RGB);
     }
 
     public void set_eye(Point3D p) {

@@ -5,10 +5,12 @@ import RayTracer.Materials.*;
 import RayTracer.Objects.*;
 import RayTracer.Tracers.*;
 import RayTracer.Utilities.*;
+import RayTracer.Cameras.*;
 
 import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -21,6 +23,7 @@ public class World {
     public RGBColor backgroundColor;
     public Tracer tracer;
     public Ambient ambient;
+    public Pinhole camera;
 
     public ArrayList<Light> lights = new ArrayList<>();
     public ArrayList<GeometricObject> objects = new ArrayList<>();
@@ -34,6 +37,10 @@ public class World {
         backgroundColor = new RGBColor(RGBColor.black);
     }
 
+    public BufferedImage renderScene() {
+        return camera.render_scene(this);
+    }
+
     public void build(RGBColor bgColor) {
         if (displayMessages) System.out.println("Building world...");
         vp = new ViewPlane();
@@ -41,6 +48,13 @@ public class World {
         vp.setGamma(1);
         vp.setSamples(9);
         vp.show_out_of_gamut = true;
+
+        camera = new Pinhole();
+        camera.set_eye(0, 0, 500);
+        camera.set_lookat(5, 0, 0);
+        camera.set_view_distance(850.0);
+        camera.set_zoom(2);
+        camera.compute_uvw();
 
         backgroundColor = bgColor;
         tracer = new RayCast(this);
@@ -338,6 +352,7 @@ public class World {
         add_object(sphere_ptr35);
     }
 
+    @Deprecated
     public void display_pixel(int row, int column, RGBColor raw_color, PixelWriter pw) {
 
         RGBColor mapped_color;
@@ -417,7 +432,6 @@ public class World {
             c.g = 0;
             c.b = 0;
         }
-
         return (c);
     }
 
