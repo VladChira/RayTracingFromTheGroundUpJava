@@ -36,7 +36,6 @@ Chapter 14 - COMPLETE
 1. Depth of field is not working with high sample count when using a thin lens.
 2. Plane intersecting with other objects creates artifacts.
 ## TODO
-1. Render into a BufferedImage
-2. Display the rendering progressively
-3. Implement bucket rendering
-4. Allow movement of the camera
+1. Display the rendering progressively
+2. Implement bucket rendering
+3. Allow movement of the camera
