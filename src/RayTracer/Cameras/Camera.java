@@ -38,8 +38,8 @@ public class Camera {
         w.setTo(c.w);
     }
 
-    public BufferedImage render_scene(World world_ptr) {
-        return new BufferedImage(world_ptr.hres,world_ptr.vres, BufferedImage.TYPE_INT_RGB);
+    public void render_scene(World world_ptr) {
+
     }
 
     public void set_eye(Point3D p) {

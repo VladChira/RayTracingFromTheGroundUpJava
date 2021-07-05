@@ -1,12 +1,9 @@
 package RayTracer.Cameras;
 
 import RayTracer.Utilities.*;
-import RayTracer.ViewPlane;
 import RayTracer.World;
-import javafx.scene.image.PixelWriter;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 public class Pinhole extends Camera {
 
@@ -37,12 +34,10 @@ public class Pinhole extends Camera {
         return dir;
     }
 
-    int nr = 0;
-
     @Override
-    public BufferedImage render_scene(World world) {
-        BufferedImage render = new BufferedImage(world.hres, world.vres, BufferedImage.TYPE_INT_RGB);
-
+    public void render_scene(World world) {
+        System.out.println("Rendering...");
+        long startTime = System.currentTimeMillis();
         RGBColor pixelColor = new RGBColor();
         RGBColor accumulator = new RGBColor();
         Ray ray = new Ray();
@@ -72,9 +67,9 @@ public class Pinhole extends Camera {
 
                 Color color = new Color((int)(pixelColor.r * 255), (int)(pixelColor.g * 255), (int)(pixelColor.b * 255));
                 int colorRGB = color.getRGB();
-                render.setRGB(r,c,colorRGB);
+                World.render.setRGB(r,c,colorRGB);
             }
         }
-        return render;
+        System.out.println("Finished. Elapsed time: " + (System.currentTimeMillis() - startTime)/1000.0 + " seconds");
     }
 }

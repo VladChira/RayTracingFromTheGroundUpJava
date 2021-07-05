@@ -52,9 +52,7 @@ public class ThinLens extends Camera {
     }
 
     @Override
-    public BufferedImage render_scene(World world) {
-        BufferedImage render = new BufferedImage(world.hres, world.vres, BufferedImage.TYPE_INT_RGB);
-
+    public void render_scene(World world) {
         RGBColor pixelColor = new RGBColor();
         RGBColor accumulator = new RGBColor();
         Ray ray = new Ray();
@@ -93,9 +91,8 @@ public class ThinLens extends Camera {
 
                 Color color = new Color((int)pixelColor.r * 255, (int)pixelColor.g * 255, (int)pixelColor.b * 255, 255);
                 int colorRGB = color.getRGB();
-                render.setRGB(r,c,colorRGB);
+                World.render.setRGB(r,c,colorRGB);
             }
         }
-        return render;
     }
 }

@@ -1,3 +1,5 @@
+package GUI;
+
 import RayTracer.Utilities.RGBColor;
 import RayTracer.World;
 
@@ -11,20 +13,19 @@ public class Viewport extends JPanel {
 
     private BufferedImage frameBuffer = null;
 
-    Viewport(JFrame frame) {
+    public Viewport(JFrame frame) {
         w = new World();
         w.build(RGBColor.black);
+        frameBuffer = new BufferedImage(World.WINDOW_WIDTH, World.WINDOW_HEIGHT,BufferedImage.TYPE_INT_RGB);
     }
 
-
     public void runMainLoop() {
-        //not a loop yet, we only render once
-        long startTime = System.currentTimeMillis();
-        System.out.println("Rendering...");
-        frameBuffer = w.renderScene();
-        long elapsedTime = System.currentTimeMillis() - startTime;
-        System.out.println("Render finished. Elapsed time: " + elapsedTime/1000.0 + " seconds");
-        repaint();
+        w.renderScene();
+        while (true) {
+            //while(true) is temporary
+            frameBuffer = World.render;
+            repaint();
+        }
     }
 
     @Override

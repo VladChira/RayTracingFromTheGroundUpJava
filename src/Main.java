@@ -1,3 +1,5 @@
+import GUI.SettingsPanel;
+import GUI.Viewport;
 import RayTracer.World;
 
 import javax.swing.*;
@@ -17,7 +19,15 @@ public class Main {
         frame.add(viewport);
         frame.setVisible(true);
 
-        viewport.runMainLoop();
+        //Coming Soon
 
+        //JDialog settingsDialog = new JDialog(frame, "Settings");
+        //SettingsPanel settingsPanel = new SettingsPanel(viewport);
+        //settingsDialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+        //settingsDialog.setSize(200, 200);
+        //settingsDialog.add(settingsPanel);
+        //settingsDialog.setVisible(true);
+
+        viewport.runMainLoop();
     }
 }

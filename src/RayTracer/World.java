@@ -19,6 +19,8 @@ public class World {
     public static final int WINDOW_HEIGHT = 700;
     public static boolean displayMessages = true;
 
+    public static volatile BufferedImage render = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
+
     public ViewPlane vp;
     public RGBColor backgroundColor;
     public Tracer tracer;
@@ -37,8 +39,10 @@ public class World {
         backgroundColor = new RGBColor(RGBColor.black);
     }
 
-    public BufferedImage renderScene() {
-        return camera.render_scene(this);
+    public void renderScene() {
+        new Thread(() -> {
+            camera.render_scene(this);
+        }).start();
     }
 
     public void build(RGBColor bgColor) {
@@ -85,7 +89,6 @@ public class World {
         Sphere sphere_ptr2 = new Sphere(new Point3D(45, -7, -60), 20);
         sphere_ptr2.set_material(matte_ptr2);
         add_object(sphere_ptr2);
-
 
         Matte matte_ptr3 = new Matte();
         matte_ptr3.set_ka(ka);
