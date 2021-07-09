@@ -3,7 +3,11 @@ package RayTracer.Cameras;
 import RayTracer.Utilities.*;
 import RayTracer.World;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class Pinhole extends Camera {
 
@@ -65,11 +69,25 @@ public class Pinhole extends Camera {
                 accumulator.divideBy(world.vp.num_samples);
                 pixelColor.setTo(accumulator);
 
+                if(world.vp.show_out_of_gamut) pixelColor.setTo(world.clamp_to_color(pixelColor));
+                pixelColor.setTo(world.max_to_one(pixelColor));
                 Color color = new Color((int)(pixelColor.r * 255), (int)(pixelColor.g * 255), (int)(pixelColor.b * 255));
                 int colorRGB = color.getRGB();
                 World.render.setRGB(r,c,colorRGB);
             }
         }
         System.out.println("Finished. Elapsed time: " + (System.currentTimeMillis() - startTime)/1000.0 + " seconds");
+        //saveToFile(World.render);
     }
+
+    public void saveToFile(BufferedImage image) {
+        File f = new File("output.png");
+        try {
+            ImageIO.write(image, "PNG", f);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Saved to file.");
+    }
+
 }

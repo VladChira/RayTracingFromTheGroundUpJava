@@ -4,7 +4,6 @@ import RayTracer.Materials.Material;
 import RayTracer.Materials.Matte;
 import RayTracer.Utilities.Normal;
 import RayTracer.Utilities.Point3D;
-import RayTracer.Utilities.RGBColor;
 import RayTracer.Utilities.Ray;
 
 public class ShadeRec {

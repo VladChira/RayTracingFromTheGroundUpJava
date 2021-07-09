@@ -45,20 +45,13 @@ public class World {
         }).start();
     }
 
+
     public void build(RGBColor bgColor) {
         if (displayMessages) System.out.println("Building world...");
         vp = new ViewPlane();
         vp.setPixelSize(1);
-        vp.setGamma(1);
         vp.setSamples(9);
-        vp.show_out_of_gamut = true;
-
-        camera = new Pinhole();
-        camera.set_eye(0, 0, 500);
-        camera.set_lookat(5, 0, 0);
-        camera.set_view_distance(850.0);
-        camera.set_zoom(2);
-        camera.compute_uvw();
+        vp.show_out_of_gamut = false;
 
         backgroundColor = bgColor;
         tracer = new RayCast(this);
@@ -66,33 +59,152 @@ public class World {
         ambient = new Ambient();
         ambient.scale_radiance(0.4);
 
+        manySpheresSetup();
+        //cornellBoxSetup();
+    }
+
+    @Deprecated
+    public void display_pixel(int row, int column, RGBColor raw_color, PixelWriter pw) {
+
+        RGBColor mapped_color;
+        if (vp.show_out_of_gamut) mapped_color = clamp_to_color(raw_color);
+        else mapped_color = max_to_one(raw_color);
+
+        int x = column;
+        int y = vres - row - 1;
+
+        Color pixelColor = new Color(mapped_color.r, mapped_color.g, mapped_color.b, 1);
+        pw.setColor(x, y, pixelColor);
+    }
+
+    @Deprecated
+    public ShadeRec hit_bare_bones_objects(Ray ray) {
+        ShadeRec sr = new ShadeRec(this);
+        double t = 0;
+        double tmin = Constants.kHugeValue;
+
+        for (GeometricObject object : objects) {
+            HitInformation hitInfo = object.hit(ray, t, sr);
+            if (hitInfo.hit && hitInfo.t < tmin) {
+                sr.hit_an_object = true;
+                tmin = hitInfo.t;
+            }
+            sr.material_ptr = object.get_material();
+        }
+        return sr;
+    }
+
+    public ShadeRec hit_objects(Ray ray) {
+        ShadeRec sr = new ShadeRec(this);
+        double t = 0;
+        Normal normal = new Normal();
+        Point3D local_hit_point = new Point3D();
+        double tmin = Constants.kHugeValue;
+
+        for (GeometricObject object : objects) {
+            HitInformation hitInfo = object.hit(ray, t, sr);
+            t = hitInfo.t;
+            sr = hitInfo.sr;
+
+            if (hitInfo.hit && hitInfo.t < tmin) {
+                tmin = hitInfo.t;
+                sr.hit_an_object = true;
+                sr.material_ptr = object.get_material();
+                sr.hit_point.setTo(ray.o.addTo(ray.d.multiplyBy(t)));
+                normal.setTo(sr.normal);
+                local_hit_point.setTo(sr.local_hit_point);
+            }
+        }
+        if (sr.hit_an_object) {
+            sr.t = tmin;
+            sr.normal.setTo(normal);
+            sr.local_hit_point.setTo(local_hit_point);
+        }
+        return sr;
+    }
+
+
+    void add_object(GeometricObject... objs) {
+        objects.addAll(Arrays.asList(objs));
+    }
+
+    void add_light(Light... ls) {
+        lights.addAll(Arrays.asList(ls));
+    }
+
+    public RGBColor clamp_to_color(RGBColor raw_color) {
+        RGBColor c = new RGBColor();
+        c.setTo(raw_color);
+
+        if (raw_color.r > 1.0 || raw_color.g > 1.0 || raw_color.b > 1.0) {
+            wasOutOfGamut = true;
+            c.r = 1.0;
+            c.g = 0;
+            c.b = 0;
+        }
+        return (c);
+    }
+
+    public RGBColor max_to_one(RGBColor c) {
+        if(c.r > 1.0) c.r = 1.0;
+        if(c.g > 1.0) c.g = 1.0;
+        if(c.b > 1.0) c.b = 1.0;
+        return c;
+    }
+
+    void cornellBoxSetup(){
+        //coming soon
+    }
+
+    void manySpheresSetup() {
+
+        camera = new Pinhole();
+        camera.set_eye(0, 0, 500);
+        camera.set_lookat(5, 0, 0);
+        camera.set_view_distance(850.0);
+        camera.set_zoom(2.2);
+        camera.compute_uvw();
+
         PointLight light2 = new PointLight();
         light2.set_location(new Vector3D(100, 100, 200));
         light2.scale_radiance(3.0);
         add_light(light2);
 
-        double ka = 0.25;
-        double kd = 0.75;
+        double ka = 0.3;
+        double kd = 0.6;
 
-        Matte matte_ptr1 = new Matte();
-        matte_ptr1.set_ka(ka);
-        matte_ptr1.set_kd(kd);
+        Phong matte_ptr1 = new Phong();
+        matte_ptr1.set_ka(0.25);
+        matte_ptr1.set_kd(0.6);
+        matte_ptr1.set_ks(0.2);
+        matte_ptr1.set_e(20);
         matte_ptr1.set_cd(RGBColor.yellow);
+
         Sphere sphere_ptr1 = new Sphere(new Point3D(5, 3, 0), 30);
         sphere_ptr1.set_material(matte_ptr1);
         add_object(sphere_ptr1);
+
 
         Matte matte_ptr2 = new Matte();
         matte_ptr2.set_ka(ka);
         matte_ptr2.set_kd(kd);
         matte_ptr2.set_cd(RGBColor.brown);
+
+        Matte matte_ptr36 = new Matte();
+        matte_ptr36.set_ka(ka);
+        matte_ptr36.set_kd(kd);
+        matte_ptr36.set_cd(RGBColor.grey);
+
+
         Sphere sphere_ptr2 = new Sphere(new Point3D(45, -7, -60), 20);
         sphere_ptr2.set_material(matte_ptr2);
         add_object(sphere_ptr2);
 
-        Matte matte_ptr3 = new Matte();
+        Phong matte_ptr3 = new Phong();
         matte_ptr3.set_ka(ka);
         matte_ptr3.set_kd(kd);
+        matte_ptr3.set_ks(0.4);
+        matte_ptr3.set_e(20);
         matte_ptr3.set_cd(RGBColor.darkGreen);
         Sphere sphere_ptr3 = new Sphere(new Point3D(40, 43, -100), 17);
         sphere_ptr3.set_material(matte_ptr3);
@@ -114,10 +226,12 @@ public class World {
         sphere_ptr5.set_material(matte_ptr5);
         add_object(sphere_ptr5);
 
-        Matte matte_ptr6 = new Matte();
+        Phong matte_ptr6 = new Phong();
         matte_ptr6.set_ka(ka);
         matte_ptr6.set_kd(kd);
         matte_ptr6.set_cd(RGBColor.lightGreen);
+        matte_ptr6.set_e(10);
+        matte_ptr6.set_ks(0.5);
         Sphere sphere_ptr6 = new Sphere(new Point3D(20, -27, -35), 25);
         sphere_ptr6.set_material(matte_ptr6);
         add_object(sphere_ptr6);
@@ -186,10 +300,13 @@ public class World {
         sphere_ptr14.set_material(matte_ptr14);
         add_object(sphere_ptr14);
 
-        Matte matte_ptr15 = new Matte();
-        matte_ptr15.set_ka(ka);
-        matte_ptr15.set_kd(kd);
+        Phong matte_ptr15 = new Phong();
+        matte_ptr15.set_ka(0.5);
+        matte_ptr15.set_kd(0.5);
         matte_ptr15.set_cd(RGBColor.brown);
+        matte_ptr15.set_e(10);
+        matte_ptr15.set_ks(0.5);
+
         Sphere sphere_ptr15 = new Sphere(new Point3D(-10, 53, -120), 18);
         sphere_ptr15.set_material(matte_ptr15);
         add_object(sphere_ptr15);
@@ -210,10 +327,12 @@ public class World {
         sphere_ptr17.set_material(matte_ptr17);
         add_object(sphere_ptr17);
 
-        Matte matte_ptr18 = new Matte();
+        Phong matte_ptr18 = new Phong();
         matte_ptr18.set_ka(ka);
         matte_ptr18.set_kd(kd);
         matte_ptr18.set_cd(RGBColor.darkPurple);
+        matte_ptr18.set_ks(0.4);
+        matte_ptr18.set_e(100);
         Sphere sphere_ptr18 = new Sphere(new Point3D(-20, -57, -120), 15);
         sphere_ptr18.set_material(matte_ptr18);
         add_object(sphere_ptr18);
@@ -353,100 +472,5 @@ public class World {
         Sphere sphere_ptr35 = new Sphere(new Point3D(-3, -72, -130), 12);
         sphere_ptr35.set_material(matte_ptr35);
         add_object(sphere_ptr35);
-    }
-
-    @Deprecated
-    public void display_pixel(int row, int column, RGBColor raw_color, PixelWriter pw) {
-
-        RGBColor mapped_color;
-        if (vp.show_out_of_gamut) mapped_color = clamp_to_color(raw_color);
-        else mapped_color = max_to_one(raw_color);
-
-        int x = column;
-        int y = vres - row - 1;
-
-        Color pixelColor = new Color(mapped_color.r, mapped_color.g, mapped_color.b, 1);
-        pw.setColor(x, y, pixelColor);
-    }
-
-    @Deprecated
-    public ShadeRec hit_bare_bones_objects(Ray ray) {
-        ShadeRec sr = new ShadeRec(this);
-        double t = 0;
-        double tmin = Constants.kHugeValue;
-
-        for (GeometricObject object : objects) {
-            HitInformation hitInfo = object.hit(ray, t, sr);
-            if (hitInfo.hit && hitInfo.t < tmin) {
-                sr.hit_an_object = true;
-                tmin = hitInfo.t;
-            }
-            sr.material_ptr = object.get_material();
-        }
-        return sr;
-    }
-
-    public ShadeRec hit_objects(Ray ray) {
-        ShadeRec sr = new ShadeRec(this);
-        double t = 0;
-        Normal normal = new Normal();
-        Point3D local_hit_point = new Point3D();
-        double tmin = Constants.kHugeValue;
-        int num_objects = objects.size();
-
-        for (GeometricObject object : objects) {
-            HitInformation hitInfo = object.hit(ray, t, sr);
-            t = hitInfo.t;
-            sr = hitInfo.sr;
-
-            if (hitInfo.hit && hitInfo.t < tmin) {
-                tmin = hitInfo.t;
-                sr.hit_an_object = true;
-                sr.material_ptr = object.get_material();
-                sr.hit_point.setTo(ray.o.addTo(ray.d.multiplyBy(t)));
-                normal.setTo(sr.normal);
-                local_hit_point.setTo(sr.local_hit_point);
-            }
-        }
-        if (sr.hit_an_object) {
-            sr.t = tmin;
-            sr.normal.setTo(normal);
-            sr.local_hit_point.setTo(local_hit_point);
-        }
-        return sr;
-    }
-
-
-    void add_object(GeometricObject... objs) {
-        objects.addAll(Arrays.asList(objs));
-    }
-
-    void add_light(Light... ls) {
-        lights.addAll(Arrays.asList(ls));
-    }
-
-    public RGBColor clamp_to_color(RGBColor raw_color) {
-        RGBColor c = new RGBColor();
-        c.setTo(raw_color);
-
-        if (raw_color.r > 1.0 || raw_color.g > 1.0 || raw_color.b > 1.0) {
-            wasOutOfGamut = true;
-            c.r = 1.0;
-            c.g = 0;
-            c.b = 0;
-        }
-        return (c);
-    }
-
-    RGBColor max_to_one(RGBColor c) {
-        RGBColor copy = new RGBColor();
-        copy.setTo(c);
-        double max_value = Math.max(c.r, Math.max(c.g, c.b));
-
-        if (max_value > 1.0) {
-            copy.divideBy(max_value);
-            return c;
-        } else
-            return (c);
     }
 }

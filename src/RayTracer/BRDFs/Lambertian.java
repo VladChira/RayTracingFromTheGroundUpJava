@@ -12,8 +12,8 @@ import RayTracer.Utilities.Vector3D;
 
 public class Lambertian extends BRDF {
 
-    private double kd;
-    private RGBColor cd;
+    public double kd;
+    public RGBColor cd;
 
     public Lambertian() {
         kd = 0;
@@ -36,13 +36,5 @@ public class Lambertian extends BRDF {
 
     public void set_cd(RGBColor c) {
         cd.setTo(c);
-    }
-
-    public void set_cd(double r, double g, double b) {
-        cd.setTo(new RGBColor(r, g, b));
-    }
-
-    public void set_cd(double c) {
-        cd.setTo(new RGBColor(c, c, c));
     }
 }

@@ -11,7 +11,7 @@ public class ViewPlane {
 
     public double gamma;
     public double inv_gamma;
-    boolean show_out_of_gamut;
+    public boolean show_out_of_gamut;
 
     public ViewPlane() {
         s = 1.0;
@@ -22,6 +22,7 @@ public class ViewPlane {
     }
 
     public ViewPlane(ViewPlane vp) {
+        sampler = vp.sampler;
         s = vp.s;
         num_samples = vp.num_samples;
         gamma = vp.gamma;
@@ -35,10 +36,6 @@ public class ViewPlane {
 
     public void setGamma(double g) {
         gamma = g;
-    }
-
-    public void setGamutDisplay(boolean show) {
-        show_out_of_gamut = show;
     }
 
     public void setSamples(int n) {

@@ -16,11 +16,11 @@ public class Viewport extends JPanel {
     public Viewport(JFrame frame) {
         w = new World();
         w.build(RGBColor.black);
+        w.renderScene();
         frameBuffer = new BufferedImage(World.WINDOW_WIDTH, World.WINDOW_HEIGHT,BufferedImage.TYPE_INT_RGB);
     }
 
     public void runMainLoop() {
-        w.renderScene();
         while (true) {
             //while(true) is temporary
             frameBuffer = World.render;
@@ -32,4 +32,5 @@ public class Viewport extends JPanel {
     public void paintComponent(Graphics g) {
         g.drawImage(frameBuffer, 0, 0, this);
     }
+
 }

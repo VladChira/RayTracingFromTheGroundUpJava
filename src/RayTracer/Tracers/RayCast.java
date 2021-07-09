@@ -1,5 +1,6 @@
 package RayTracer.Tracers;
 
+import RayTracer.Materials.Matte;
 import RayTracer.ShadeRec;
 import RayTracer.Utilities.RGBColor;
 import RayTracer.Utilities.Ray;

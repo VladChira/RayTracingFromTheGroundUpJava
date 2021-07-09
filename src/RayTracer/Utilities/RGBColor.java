@@ -71,12 +71,12 @@ public class RGBColor {
     public static final RGBColor yellow = new RGBColor(1, 1, 0);
     public static final RGBColor magenta = new RGBColor(1, 0, 1);
     public static final RGBColor cyan = new RGBColor(0, 1, 1);
-    public static RGBColor grey = new RGBColor(0.5, 0.5, 0.5);
-    public static RGBColor brown = new RGBColor(0.647, 0.164, 0.164);
-    public static RGBColor darkGreen = new RGBColor(0.0, 0.392, 0.0);
-    public static RGBColor orange = new RGBColor(1, 0.27, 0);
-    public static RGBColor lightGreen = new RGBColor(0.564, 0.933, 0.564);
-    public static RGBColor darkYellow = new RGBColor(0.607, 0.529, 0.047);
-    public static RGBColor lightPurple = new RGBColor(0.694, 0.611, 0.850);
-    public static RGBColor darkPurple = new RGBColor(0.188, 0.098, 0.203);
+    public static final RGBColor grey = new RGBColor(0.5, 0.5, 0.5);
+    public static final RGBColor brown = new RGBColor(0.29, 0.21, 0.109);
+    public static final RGBColor darkGreen = new RGBColor(0.0, 0.392, 0.0);
+    public static final RGBColor orange = new RGBColor(0.89, 0.40, 0.09);
+    public static final RGBColor lightGreen = new RGBColor(0.564, 0.933, 0.564);
+    public static final RGBColor darkYellow = new RGBColor(0.607, 0.529, 0.047);
+    public static final RGBColor lightPurple = new RGBColor(0.694, 0.611, 0.850);
+    public static final RGBColor darkPurple = new RGBColor(0.188, 0.098, 0.203);
 }
