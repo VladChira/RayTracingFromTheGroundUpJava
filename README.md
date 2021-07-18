@@ -32,10 +32,13 @@ Chapter 13 - COMPLETE
 
 Chapter 14 - COMPLETE
 
+Chapter 15 - COMPLETE
+
 ## Known Bugs
 1. Depth of field is not working with high sample count when using a thin lens.
 2. Plane intersecting with other objects creates artifacts.
 ## TODO
-1. Allow movement of the camera
-2. Implement bucket rendering
+1. Add GUI with Swing
+2. Allow movement of the camera
+3. Implement bucket rendering
 
