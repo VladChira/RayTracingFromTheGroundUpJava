@@ -3,95 +3,59 @@ package RayTracer;
 import RayTracer.Lights.*;
 import RayTracer.Materials.*;
 import RayTracer.Objects.*;
+import RayTracer.Samplers.*;
 import RayTracer.Tracers.*;
 import RayTracer.Utilities.*;
 import RayTracer.Cameras.*;
-
-import javafx.scene.image.PixelWriter;
-import javafx.scene.paint.Color;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class World {
-    public static final int WINDOW_WIDTH = 700;
-    public static final int WINDOW_HEIGHT = 700;
+    public static final int WINDOW_SIZE = 700;
     public static boolean displayMessages = true;
+    public static final int num_samples = 64;
 
-    public static volatile BufferedImage render = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
+    public static volatile BufferedImage render = new BufferedImage(WINDOW_SIZE, WINDOW_SIZE, BufferedImage.TYPE_INT_RGB);
 
     public ViewPlane vp;
     public RGBColor backgroundColor;
     public Tracer tracer;
-    public Ambient ambient;
+    public Light ambient;
     public Pinhole camera;
 
     public ArrayList<Light> lights = new ArrayList<>();
     public ArrayList<GeometricObject> objects = new ArrayList<>();
 
-    public int hres = WINDOW_WIDTH;
-    public int vres = WINDOW_HEIGHT;
-
-    public boolean wasOutOfGamut = false;
+    public static boolean wasOutOfGamut = false;
 
     public World() {
         backgroundColor = new RGBColor(RGBColor.black);
     }
 
     public void renderScene() {
-        new Thread(() -> {
-            camera.render_scene(this);
-        }).start();
+        new Thread(() -> camera.render_scene(this)).start();
     }
-
 
     public void build(RGBColor bgColor) {
         if (displayMessages) System.out.println("Building world...");
         vp = new ViewPlane();
         vp.setPixelSize(1);
-        vp.setSamples(9);
+        vp.setSamples(num_samples);
         vp.show_out_of_gamut = false;
 
         backgroundColor = bgColor;
         tracer = new RayCast(this);
 
-        ambient = new Ambient();
-        ambient.scale_radiance(0.4);
+        AmbientOccluder ambientOccluder = new AmbientOccluder();
+        ambientOccluder.scale_radiance(1);
+        ambientOccluder.set_min_amount(new RGBColor(0));
+        ambientOccluder.set_sampler(new MultiJittered(num_samples));
+        ambient = ambientOccluder;
 
-        manySpheresSetup();
-        //cornellBoxSetup();
-    }
-
-    @Deprecated
-    public void display_pixel(int row, int column, RGBColor raw_color, PixelWriter pw) {
-
-        RGBColor mapped_color;
-        if (vp.show_out_of_gamut) mapped_color = clamp_to_color(raw_color);
-        else mapped_color = max_to_one(raw_color);
-
-        int x = column;
-        int y = vres - row - 1;
-
-        Color pixelColor = new Color(mapped_color.r, mapped_color.g, mapped_color.b, 1);
-        pw.setColor(x, y, pixelColor);
-    }
-
-    @Deprecated
-    public ShadeRec hit_bare_bones_objects(Ray ray) {
-        ShadeRec sr = new ShadeRec(this);
-        double t = 0;
-        double tmin = Constants.kHugeValue;
-
-        for (GeometricObject object : objects) {
-            HitInformation hitInfo = object.hit(ray, t, sr);
-            if (hitInfo.hit && hitInfo.t < tmin) {
-                sr.hit_an_object = true;
-                tmin = hitInfo.t;
-            }
-            sr.material_ptr = object.get_material();
-        }
-        return sr;
+        //manySpheresSetup();
+        singleSphere();
     }
 
     public ShadeRec hit_objects(Ray ray) {
@@ -123,7 +87,6 @@ public class World {
         return sr;
     }
 
-
     void add_object(GeometricObject... objs) {
         objects.addAll(Arrays.asList(objs));
     }
@@ -132,32 +95,11 @@ public class World {
         lights.addAll(Arrays.asList(ls));
     }
 
-    public RGBColor clamp_to_color(RGBColor raw_color) {
-        RGBColor c = new RGBColor();
-        c.setTo(raw_color);
-
-        if (raw_color.r > 1.0 || raw_color.g > 1.0 || raw_color.b > 1.0) {
-            wasOutOfGamut = true;
-            c.r = 1.0;
-            c.g = 0;
-            c.b = 0;
-        }
-        return (c);
-    }
-
-    public RGBColor max_to_one(RGBColor c) {
-        if(c.r > 1.0) c.r = 1.0;
-        if(c.g > 1.0) c.g = 1.0;
-        if(c.b > 1.0) c.b = 1.0;
-        return c;
-    }
-
-    void cornellBoxSetup(){
+    void cornellBoxSetup() {
         //coming soon
     }
 
     void manySpheresSetup() {
-
         camera = new Pinhole();
         camera.set_eye(0, 0, 500);
         camera.set_lookat(5, 0, 0);
@@ -166,8 +108,9 @@ public class World {
         camera.compute_uvw();
 
         PointLight light2 = new PointLight();
-        light2.set_location(new Vector3D(100, 100, 200));
+        light2.set_location(new Vector3D(200, 100, 300));
         light2.scale_radiance(3.0);
+        light2.enable_shadows();
         add_light(light2);
 
         double ka = 0.3;
@@ -472,5 +415,31 @@ public class World {
         Sphere sphere_ptr35 = new Sphere(new Point3D(-3, -72, -130), 12);
         sphere_ptr35.set_material(matte_ptr35);
         add_object(sphere_ptr35);
+    }
+
+    void singleSphere() {
+        camera = new Pinhole();
+        camera.set_eye(25, 20, -45);
+        camera.set_lookat(0, 1, 0);
+        camera.set_view_distance(6000);
+        camera.compute_uvw();
+
+        Matte matte_ptr1 = new Matte();
+        matte_ptr1.set_ka(0.75);
+        matte_ptr1.set_kd(0.0);
+        matte_ptr1.set_cd(RGBColor.yellow);
+
+        Sphere sphere_ptr = new Sphere(new Point3D(0, 1, 0), 1);
+        sphere_ptr.set_material(matte_ptr1);
+
+        Matte matte_ptr2 = new Matte();
+        matte_ptr2.set_ka(0.75);
+        matte_ptr2.set_kd(0);
+        matte_ptr2.set_cd(RGBColor.white);
+
+        Plane plane_ptr = new Plane(new Point3D(0, 0, 0), new Normal(0, 1, 0));
+        plane_ptr.set_material(matte_ptr2);
+        add_object(plane_ptr);
+        add_object(sphere_ptr);
     }
 }

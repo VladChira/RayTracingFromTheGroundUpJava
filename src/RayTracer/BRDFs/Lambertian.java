@@ -16,8 +16,7 @@ public class Lambertian extends BRDF {
     public RGBColor cd;
 
     public Lambertian() {
-        kd = 0;
-        cd = new RGBColor(0, 0, 0);
+
     }
 
     @Override
@@ -35,6 +34,6 @@ public class Lambertian extends BRDF {
     }
 
     public void set_cd(RGBColor c) {
-        cd.setTo(c);
+        cd = c;
     }
 }

@@ -2,9 +2,10 @@ package RayTracer.Lights;
 
 import RayTracer.ShadeRec;
 import RayTracer.Utilities.RGBColor;
+import RayTracer.Utilities.Ray;
 import RayTracer.Utilities.Vector3D;
 
-public class Ambient extends Light {
+public class Ambient implements Light {
 
     private double ls;
     private RGBColor color_;
@@ -16,7 +17,7 @@ public class Ambient extends Light {
 
     public Ambient(Ambient a) {
         this.ls = a.ls;
-        color_.setTo(a.color_);
+        this.color_ = a.color_;
     }
 
     public void scale_radiance(double b) {
@@ -43,5 +44,13 @@ public class Ambient extends Light {
     @Override
     public RGBColor L(ShadeRec s) {
         return (color_.multiplyBy(ls));
+    }
+
+    @Override
+    public boolean casts_shadows() { return false; }
+
+    @Override
+    public boolean in_shadow(Ray r, ShadeRec sr) {
+        return false;
     }
 }

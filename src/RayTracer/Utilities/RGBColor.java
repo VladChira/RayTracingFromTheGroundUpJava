@@ -1,5 +1,7 @@
 package RayTracer.Utilities;
 
+import RayTracer.World;
+
 public class RGBColor {
     public static final RGBColor black = new RGBColor(0, 0, 0);
     public double r, g, b;
@@ -63,6 +65,34 @@ public class RGBColor {
         return (new RGBColor(r + c.r, g + c.g, b + c.b));
     }
 
+    public static RGBColor clamp_to_color(RGBColor raw_color) {
+        RGBColor c = new RGBColor();
+        c.setTo(raw_color);
+
+        if (raw_color.r > 1.0 || raw_color.g > 1.0 || raw_color.b > 1.0) {
+            c.r = 1.0;
+            c.g = 0;
+            c.b = 0;
+        }
+        return (c);
+    }
+
+    public static RGBColor max_to_one(RGBColor c) {
+        if (c.r > 1.0) {
+            c.r = 1.0;
+            World.wasOutOfGamut = true;
+        }
+        if (c.g > 1.0) {
+            c.g = 1.0;
+            World.wasOutOfGamut = true;
+        }
+        if (c.b > 1.0) {
+            c.b = 1.0;
+            World.wasOutOfGamut = true;
+        }
+
+        return c;
+    }
 
     public static final RGBColor white = new RGBColor(1, 1, 1);
     public static final RGBColor red = new RGBColor(1, 0, 0);

@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
 
         JFrame frame = new JFrame("Ray Tracer");
-        frame.setSize(World.WINDOW_WIDTH, World.WINDOW_HEIGHT);
+        frame.setSize(World.WINDOW_SIZE, World.WINDOW_SIZE);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();

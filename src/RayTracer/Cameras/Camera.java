@@ -15,6 +15,7 @@ public class Camera {
 
     public Point3D eye;
     public Point3D lookat;
+    public double d;
     Vector3D u, v, w;
     Vector3D up;
 
@@ -29,13 +30,23 @@ public class Camera {
     }
 
     public Camera(Camera c) {
-        eye.setTo(c.eye);
-        lookat.setTo(c.lookat);
-        up.setTo(c.up);
+        eye = c.eye;
+        lookat = c.lookat;
+        up = c.up;
 
-        u.setTo(c.u);
-        v.setTo(c.v);
-        w.setTo(c.w);
+        u = c.u;
+        v = c.v;
+        w = c.w;
+
+        d = c.d;
+    }
+
+    public void set_view_distance(double d) {
+        this.d = d;
+    }
+
+    public void set_zoom(double zoom) {
+
     }
 
     public void render_scene(World world_ptr) {

@@ -14,6 +14,8 @@ public class Plane extends GeometricObject {
     public Point3D a; //point through which plane passes
     Normal n; //normal to the plane;
 
+    double kEpsilon = 0.00001;
+
     public Plane() {
         a = new Point3D(0.0);
         n = new Normal(0, 1, 0);
@@ -39,7 +41,7 @@ public class Plane extends GeometricObject {
 
         float t = (float) (numerator / denominator);
 
-        if (t > Constants.kEpsilon) {
+        if (t > kEpsilon) {
             tmin = t;
             newSr.normal = n;
             newSr.local_hit_point = ray.o.addTo(ray.d.multiplyBy(t));

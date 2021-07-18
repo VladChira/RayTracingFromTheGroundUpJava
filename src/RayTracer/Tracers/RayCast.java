@@ -28,10 +28,10 @@ public class RayCast extends Tracer {
     @Override
     public RGBColor trace_ray(Ray ray, int depth) {
         ShadeRec sr = new ShadeRec(world_ptr.hit_objects(ray));
-
         if (sr.hit_an_object) {
             sr.ray.setTo(ray);
-            return (new RGBColor(sr.material_ptr.shade(sr)));
+            RGBColor outColor = sr.material_ptr.shade(sr);
+            return outColor;
         } else
             return world_ptr.backgroundColor;
     }

@@ -2,20 +2,16 @@ package RayTracer.Lights;
 
 import RayTracer.ShadeRec;
 import RayTracer.Utilities.RGBColor;
+import RayTracer.Utilities.Ray;
 import RayTracer.Utilities.Vector3D;
 
-import static RayTracer.Utilities.RGBColor.black;
+public interface Light {
 
-public class Light {
-    public Light() {
+    Vector3D get_direction(ShadeRec sr);
 
-    }
+    RGBColor L(ShadeRec sr);
 
-    public Vector3D get_direction(ShadeRec sr) {
-        return new Vector3D(0, 0, 0);
-    }
+    boolean casts_shadows();
 
-    public RGBColor L(ShadeRec sr) {
-        return (black);
-    }
+    boolean in_shadow(Ray r, ShadeRec sr);
 }

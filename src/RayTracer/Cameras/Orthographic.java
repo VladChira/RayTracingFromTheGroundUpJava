@@ -26,15 +26,15 @@ public class Orthographic extends Camera {
 
         ray.d = new Vector3D(0, 0, -1);
 
-        for (int r = 0; r < world.vres; r++) {
-            for (int c = 0; c <= world.hres; c++) {
+        for (int r = 0; r < World.WINDOW_SIZE; r++) {
+            for (int c = 0; c <= World.WINDOW_SIZE; c++) {
                 accumulator = new RGBColor();
 
                 for (int j = 0; j < world.vp.num_samples; j++) {
                     sp = world.vp.sampler.sample_unit_square();
 
-                    pp.x = world.vp.s * (c - 0.5 * world.hres + sp.x);
-                    pp.y = world.vp.s * (r - 0.5 * world.vres + sp.y);
+                    pp.x = world.vp.s * (c - 0.5 * World.WINDOW_SIZE + sp.x);
+                    pp.y = world.vp.s * (r - 0.5 * World.WINDOW_SIZE + sp.y);
                     ray.o = new Point3D(pp.x, pp.y, zw);
 
                     RGBColor tracedPixel = world.tracer.trace_ray(ray, depth);

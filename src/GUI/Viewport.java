@@ -17,7 +17,7 @@ public class Viewport extends JPanel {
         w = new World();
         w.build(RGBColor.black);
         w.renderScene();
-        frameBuffer = new BufferedImage(World.WINDOW_WIDTH, World.WINDOW_HEIGHT,BufferedImage.TYPE_INT_RGB);
+        frameBuffer = new BufferedImage(World.WINDOW_SIZE, World.WINDOW_SIZE, BufferedImage.TYPE_INT_RGB);
     }
 
     public void runMainLoop() {

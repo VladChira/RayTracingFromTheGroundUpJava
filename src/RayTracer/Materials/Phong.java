@@ -4,9 +4,10 @@ import RayTracer.BRDFs.GlossySpecular;
 import RayTracer.BRDFs.Lambertian;
 import RayTracer.ShadeRec;
 import RayTracer.Utilities.RGBColor;
+import RayTracer.Utilities.Ray;
 import RayTracer.Utilities.Vector3D;
 
-public class Phong extends Material{
+public class Phong extends Material {
     public Lambertian ambient_brdf;
     public Lambertian diffuse_brdf;
     public GlossySpecular specular_brdf;
@@ -39,14 +40,22 @@ public class Phong extends Material{
             double ndotwi = wi.dotProduct(new Vector3D(sr.normal));
 
             if (ndotwi > 0.0) {
-                RGBColor f1 = (diffuse_brdf.f(sr, wo, wi).addTo(specular_brdf.f(sr,wo,wi))).multiplyBy(sr.w.lights.get(j).L(sr));
-                RGBColor newL = f1.multiplyBy(ndotwi);
-                double r1 = newL.r;
-                double r2 = newL.g;
-                double r3 = newL.b;
-                accR += r1;
-                accG += r2;
-                accB += r3;
+                boolean in_shadow = false;
+                if (sr.w.lights.get(j).casts_shadows()) {
+                    Ray shadowRay = new Ray(sr.hit_point, wi);
+                    in_shadow = sr.w.lights.get(j).in_shadow(shadowRay, sr);
+                }
+
+                if (!in_shadow) {
+                    RGBColor f1 = (diffuse_brdf.f(sr, wo, wi).addTo(specular_brdf.f(sr, wo, wi))).multiplyBy(sr.w.lights.get(j).L(sr));
+                    RGBColor newL = f1.multiplyBy(ndotwi);
+                    double r1 = newL.r;
+                    double r2 = newL.g;
+                    double r3 = newL.b;
+                    accR += r1;
+                    accG += r2;
+                    accB += r3;
+                }
             }
         }
         return new RGBColor(accR, accG, accB);

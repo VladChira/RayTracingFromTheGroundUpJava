@@ -42,6 +42,7 @@ public class Pinhole extends Camera {
     public void render_scene(World world) {
         System.out.println("Rendering...");
         long startTime = System.currentTimeMillis();
+
         RGBColor pixelColor = new RGBColor();
         RGBColor accumulator = new RGBColor();
         Ray ray = new Ray();
@@ -52,16 +53,15 @@ public class Pinhole extends Camera {
         world.vp.s /= zoom;
         ray.o = eye;
 
-        for (int r = 0; r < world.vres; r++) {
-            for (int c = 0; c < world.hres; c++) {
+        for (int r = 0; r < World.WINDOW_SIZE; r++) {
+            for (int c = 0; c < World.WINDOW_SIZE; c++) {
 
                 accumulator = new RGBColor();
-
                 for (int j = 0; j < world.vp.num_samples; j++) {
 
                     sp = world.vp.sampler.sample_unit_square();
-                    pp.x = world.vp.s * (c - 0.5 * world.hres + sp.x);
-                    pp.y = world.vp.s * (r - 0.5 * world.vres + sp.y);
+                    pp.x = world.vp.s * (c - 0.5 * World.WINDOW_SIZE + sp.x);
+                    pp.y = world.vp.s * (r - 0.5 * World.WINDOW_SIZE + sp.y);
                     ray.d = get_direction(pp);
                     RGBColor tracedPixel = world.tracer.trace_ray(ray, depth);
                     accumulator.add(tracedPixel);
@@ -69,14 +69,15 @@ public class Pinhole extends Camera {
                 accumulator.divideBy(world.vp.num_samples);
                 pixelColor.setTo(accumulator);
 
-                if(world.vp.show_out_of_gamut) pixelColor.setTo(world.clamp_to_color(pixelColor));
-                pixelColor.setTo(world.max_to_one(pixelColor));
-                Color color = new Color((int)(pixelColor.r * 255), (int)(pixelColor.g * 255), (int)(pixelColor.b * 255));
+                if (world.vp.show_out_of_gamut) pixelColor.setTo(RGBColor.clamp_to_color(pixelColor));
+                pixelColor.setTo(RGBColor.max_to_one(pixelColor));
+                Color color = new Color((int) (pixelColor.r * 255), (int) (pixelColor.g * 255), (int) (pixelColor.b * 255));
                 int colorRGB = color.getRGB();
-                World.render.setRGB(r,c,colorRGB);
+                World.render.setRGB(c, World.WINDOW_SIZE - r - 1, colorRGB);
             }
         }
-        System.out.println("Finished. Elapsed time: " + (System.currentTimeMillis() - startTime)/1000.0 + " seconds");
+        if (World.wasOutOfGamut) System.out.println("Warning. Out of gamut colors were clamped.");
+        System.out.println("Render finished. Elapsed time: " + (System.currentTimeMillis() - startTime) / 1000.0 + " seconds");
         //saveToFile(World.render);
     }
 

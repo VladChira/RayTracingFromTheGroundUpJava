@@ -7,6 +7,7 @@ public class Regular extends Sampler {
     public Regular(int samples) {
         super(samples);
         generateSamples();
+        setup_shuffled_indices();
     }
 
     @Override

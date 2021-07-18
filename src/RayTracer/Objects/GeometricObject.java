@@ -29,4 +29,5 @@ public class GeometricObject {
     public HitInformation hit(Ray ray, double tmin, ShadeRec s) {
         return new HitInformation(false, tmin, s);
     }
+
 }

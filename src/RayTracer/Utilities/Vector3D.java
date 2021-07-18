@@ -58,7 +58,7 @@ public class Vector3D {
     }
 
     public double getLength() {
-        return (Math.sqrt((float) (x * x + y * y + z * z)));
+        return (Math.sqrt(((x * x + y * y + z * z))));
     }
 
     public double getLengthSquared() {
@@ -117,5 +117,9 @@ public class Vector3D {
 
     public Vector3D negate() {
         return new Vector3D(-this.x, -this.y, -this.z);
+    }
+
+    public double distance(Point3D b) {
+        return Math.sqrt((this.x - b.x) * (this.x - b.x) + (this.y - b.y) * (this.y - b.y) + (this.z - b.z)*(this.z - b.z));
     }
 }

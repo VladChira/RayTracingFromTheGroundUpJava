@@ -2,12 +2,10 @@ package RayTracer.Samplers;
 
 import RayTracer.Utilities.Point2D;
 
-@Deprecated
 public class Jittered extends Sampler {
 
-    public Jittered(int samples, int sets) {
-        super(samples, sets);
-        generateSamples();
+    public Jittered(int samples) {
+        super(samples);
     }
 
     @Override

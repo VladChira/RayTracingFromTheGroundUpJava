@@ -10,6 +10,8 @@ public class Ray {
     }
 
     public Ray(Point3D origin, Vector3D dir) {
+        this.o = new Point3D();
+        this.d = new Vector3D();
         this.o.setTo(origin);
         this.d.setTo(dir);
     }
