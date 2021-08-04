@@ -36,6 +36,12 @@ public class RGBColor {
         this.b = this.b / a;
     }
 
+    public RGBColor divide(double a) {
+        RGBColor c = new RGBColor(this);
+        c.divideBy(a);
+        return c;
+    }
+
     public RGBColor multiplyBy(double a) {
         return (new RGBColor(r * a, g * a, b * a));
     }

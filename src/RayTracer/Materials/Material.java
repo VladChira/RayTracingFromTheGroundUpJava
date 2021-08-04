@@ -3,18 +3,9 @@ package RayTracer.Materials;
 import RayTracer.ShadeRec;
 import RayTracer.Utilities.RGBColor;
 
-import static RayTracer.Utilities.RGBColor.black;
+public interface Material {
 
-public class Material {
-    public Material() {
-
-    }
-
-    Material(Material material) {
-
-    }
-
-    public RGBColor shade(ShadeRec sr) {
-        return (black);
-    }
+    RGBColor shade(ShadeRec sr);
+    RGBColor area_light_shade(ShadeRec sr);
+    RGBColor get_Le(ShadeRec sr);
 }

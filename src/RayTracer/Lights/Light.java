@@ -11,7 +11,13 @@ public interface Light {
 
     RGBColor L(ShadeRec sr);
 
+    double G(ShadeRec sr);
+
+    double pdf(ShadeRec sr);
+
     boolean casts_shadows();
 
     boolean in_shadow(Ray r, ShadeRec sr);
+
+
 }

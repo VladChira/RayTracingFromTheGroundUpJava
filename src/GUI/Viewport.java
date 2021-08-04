@@ -1,7 +1,6 @@
 package GUI;
 
-import RayTracer.Utilities.RGBColor;
-import RayTracer.World;
+import RayTracer.SceneManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,21 +8,18 @@ import java.awt.image.BufferedImage;
 
 public class Viewport extends JPanel {
 
-    public World w;
+    private BufferedImage frameBuffer;
 
-    private BufferedImage frameBuffer = null;
-
-    public Viewport(JFrame frame) {
-        w = new World();
-        w.build(RGBColor.black);
-        w.renderScene();
-        frameBuffer = new BufferedImage(World.WINDOW_SIZE, World.WINDOW_SIZE, BufferedImage.TYPE_INT_RGB);
+    public Viewport(JFrame frame, SceneManager sm) {
+        sm.buildWorld();
+        sm.renderWorld();
+        frameBuffer = new BufferedImage(SceneManager.WINDOW_SIZE, SceneManager.WINDOW_SIZE, BufferedImage.TYPE_INT_RGB);
     }
 
     public void runMainLoop() {
         while (true) {
             //while(true) is temporary
-            frameBuffer = World.render;
+            frameBuffer = SceneManager.render;
             repaint();
         }
     }

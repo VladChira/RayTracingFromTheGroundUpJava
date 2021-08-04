@@ -86,4 +86,14 @@ public class Sphere extends GeometricObject {
 
         return new HitInformation(false, tmin, newSr);
     }
+
+    @Override
+    public Normal get_normal(Point3D sample_point) {
+        return null;
+    }
+
+    @Override
+    public double pdf(ShadeRec sr) {
+        return 0;
+    }
 }

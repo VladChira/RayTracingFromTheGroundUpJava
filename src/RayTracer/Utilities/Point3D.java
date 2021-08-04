@@ -54,4 +54,8 @@ public class Point3D {
     public Point3D addTo(Vector3D v) {
         return (new Point3D(x + v.x, y + v.y, z + v.z));
     }
+
+    public double d_squared(Point3D p) {
+        return ((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y) + (z - p.z) * (z - p.z));
+    }
 }

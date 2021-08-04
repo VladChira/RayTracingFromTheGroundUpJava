@@ -61,6 +61,16 @@ public class AmbientOccluder implements Light {
     }
 
     @Override
+    public double G(ShadeRec sr) {
+        return 0;
+    }
+
+    @Override
+    public double pdf(ShadeRec sr) {
+        return 0;
+    }
+
+    @Override
     public boolean casts_shadows() {
         return false;
     }

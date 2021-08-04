@@ -33,6 +33,16 @@ public class Directional implements Light {
         return (color_.multiplyBy(ls));
     }
 
+    @Override
+    public double G(ShadeRec sr) {
+        return 1.0;
+    }
+
+    @Override
+    public double pdf(ShadeRec sr) {
+        return 1.0;
+    }
+
     public void scale_radiance(double ls) {
         this.ls = ls;
     }

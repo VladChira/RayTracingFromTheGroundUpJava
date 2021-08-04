@@ -10,7 +10,7 @@ import RayTracer.Utilities.Vector3D;
  * Light is scattered equally in all directions (see 13.8).
  */
 
-public class Lambertian extends BRDF {
+public class Lambertian implements BRDF {
 
     public double kd;
     public RGBColor cd;
@@ -22,6 +22,16 @@ public class Lambertian extends BRDF {
     @Override
     public RGBColor f(ShadeRec sr, Vector3D wo, Vector3D wi) {
         return (cd.multiplyBy(kd).multiplyBy(Constants.invPI));
+    }
+
+    @Override
+    public RGBColor sample_f(ShadeRec sr, Vector3D wo, Vector3D wi) {
+        return null;
+    }
+
+    @Override
+    public RGBColor sample_f(ShadeRec sr, Vector3D wo, Vector3D wi, float pdf) {
+        return null;
     }
 
     @Override

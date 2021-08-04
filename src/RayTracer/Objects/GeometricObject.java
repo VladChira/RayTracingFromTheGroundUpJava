@@ -2,12 +2,10 @@ package RayTracer.Objects;
 
 import RayTracer.Materials.Material;
 import RayTracer.Materials.Matte;
-import RayTracer.Utilities.HitInformation;
-import RayTracer.Utilities.RGBColor;
+import RayTracer.Utilities.*;
 import RayTracer.ShadeRec;
-import RayTracer.Utilities.Ray;
 
-public class GeometricObject {
+public abstract class GeometricObject {
     Material material_ptr;
 
     public GeometricObject() {
@@ -26,8 +24,15 @@ public class GeometricObject {
         return this.material_ptr;
     }
 
-    public HitInformation hit(Ray ray, double tmin, ShadeRec s) {
-        return new HitInformation(false, tmin, s);
+    public abstract HitInformation hit(Ray ray, double tmin, ShadeRec s);
+
+    public abstract Normal get_normal(Point3D sample_point);
+
+    public double pdf(ShadeRec sr) {
+        return 1;
     }
 
+    public Point3D sample() {
+        return new Point3D();
+    }
 }

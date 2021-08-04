@@ -4,7 +4,7 @@ import RayTracer.ShadeRec;
 import RayTracer.Utilities.RGBColor;
 import RayTracer.Utilities.Vector3D;
 
-public class GlossySpecular extends BRDF {
+public class GlossySpecular implements BRDF {
 
     public double ks;
     public double e;
@@ -27,6 +27,16 @@ public class GlossySpecular extends BRDF {
             L.setTo(cd.multiplyBy(ks).multiplyBy(Math.pow(rdotwo,e)));
         }
         return L;
+    }
+
+    @Override
+    public RGBColor sample_f(ShadeRec sr, Vector3D wo, Vector3D wi) {
+        return null;
+    }
+
+    @Override
+    public RGBColor sample_f(ShadeRec sr, Vector3D wo, Vector3D wi, float pdf) {
+        return null;
     }
 
     @Override

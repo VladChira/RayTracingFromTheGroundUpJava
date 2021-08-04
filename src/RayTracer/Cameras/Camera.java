@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
  * Base class for all virtual cameras.
  */
 
-public class Camera {
+public abstract class Camera {
 
     public Point3D eye;
     public Point3D lookat;

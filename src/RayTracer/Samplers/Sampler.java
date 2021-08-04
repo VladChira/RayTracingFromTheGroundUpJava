@@ -4,11 +4,10 @@ import RayTracer.Utilities.Point2D;
 import RayTracer.Utilities.Point3D;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Random;
 
-public class Sampler {
+public abstract class Sampler {
     public int num_samples;
     public int num_sets;
     public int jump;
@@ -122,10 +121,7 @@ public class Sampler {
         }
     }
 
-
-    public void generateSamples() {
-
-    }
+    public abstract void generateSamples();
 
     public void shuffle_x_coordinates() {
         for (int p = 0; p < num_sets; p++)

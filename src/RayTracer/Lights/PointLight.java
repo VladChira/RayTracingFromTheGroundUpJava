@@ -36,13 +36,22 @@ public class PointLight implements Light {
         return false;
     }
 
-
     public Vector3D get_direction(ShadeRec sr) {
         return ((location.subtract(new Vector3D(sr.hit_point))).getHat());
     }
 
     public RGBColor L(ShadeRec sr) {
         return (color_.multiplyBy(ls));
+    }
+
+    @Override
+    public double G(ShadeRec sr) {
+        return 1.0;
+    }
+
+    @Override
+    public double pdf(ShadeRec sr) {
+        return 1.0;
     }
 
     public void scale_radiance(double ls) {
@@ -56,7 +65,6 @@ public class PointLight implements Light {
     public void set_location(Vector3D l) {
         location.setTo(l);
     }
-
 
     public void enable_shadows() {
         shadows = true;
